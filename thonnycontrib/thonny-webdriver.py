@@ -222,7 +222,9 @@ def start_observing_element_by_id():
         Returns:
             None
         """
-    observe_id = askstring("Observe", "ID")
+    observe_id = askstring(
+        "ID to Observe", "Which HTML element ID would you like to observe?"
+    )
     singleton = Singleton.getInstance()
     singleton.add_observed_id(observe_id)
     t = Thread(target=observe_element_in_background)
@@ -238,7 +240,9 @@ def stop_observing_element_by_id():
         Returns:
             None
         """
-    observe_id = askstring("Observe", "ID")
+    observe_id = askstring(
+        "ID to Observe", "Which HTML element ID would you like to stop observing?"
+    )
     singleton = Singleton.getInstance()
     singleton.remove_observed_id(observe_id)
 

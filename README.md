@@ -23,4 +23,4 @@ PYTHONPATH=/path/to/thonny-webdriver/ python -m thonny
 
 ## Usage in thonny
 
-Click on the "Tools" section in the menu at the top of the program. And then select "Open Website". You will be asked to input a website. A new browser window will open with the desired website.
+Click on the "Tools" section in the menu at the top of the program. And then select "Open Website". You will be asked to input a website. A new browser window will open with the desired website. After that, you can click on the "Tools" section in the menu again and select "Start observing element by id". You will be asked to input a HTML element id which will be observed in the background. To stop observing an elment you can select the "Stop observing element by id" option and provide the HTML element id.
