@@ -165,7 +165,8 @@ def open_website():
             None
         """
     singleton = Singleton.getInstance()
-    address = askstring("Website", "Which website would you like to visit?")
+    # This is the URL for struktog only available in the campus VPN
+    address = "http://172.26.62.121"
     try:
         singleton.driver.get(address)
     except exceptions.InsecureCertificateException:
@@ -174,6 +175,11 @@ def open_website():
         singleton.toggle_closed()
         singleton = Singleton.getInstance()
         singleton.driver.get(address)
+    # This simulates a click on the ToggleSourcecode element, to show the select element to choose a programming language
+    singleton.driver.execute_script('document.getElementsByClassName("ToggleSourcecode")[0].click()')
+    # This also simulates a click on the correct option but the code is different as the .click() function does not work for this: https://stackoverflow.com/questions/49886729/simulate-a-human-click-and-select-on-dropdown-menu
+    singleton.driver.execute_script('var optionToClick = document.getElementById("SourcecodeSelect").childNodes[1]; optionToClick.selected = true; optionToClick.dispatchEvent(new PointerEvent("pointerdown", {bubbles: true})); optionToClick.dispatchEvent(new MouseEvent("mousedown", {bubbles: true})); optionToClick.dispatchEvent(new PointerEvent("pointerup", {bubbles: true})); optionToClick.dispatchEvent(new MouseEvent("mouseup", {bubbles: true})); optionToClick.dispatchEvent(new MouseEvent("mouseout", {bubbles: true})); optionToClick.dispatchEvent(new MouseEvent("click", {bubbles: true})); optionToClick.dispatchEvent(new Event("change", {bubbles: true}));')
+
 
 
 def observe_element_in_background():
@@ -190,6 +196,10 @@ def observe_element_in_background():
     list_id = len(observed_ids) - 1
     html_id = observed_ids[list_id]
     observed_text = driver.find_element_by_id(html_id).text
+    # Get the current opened code view
+    code_view = get_workbench().get_editor_notebook().get_current_editor().get_code_view()
+    # Change the content to the observed text
+    code_view.set_content(observed_text)
     print("Start observing on the following URL: " + url)
     print("And the following ID: " + html_id)
     while html_id in singleton.get_observed_ids():
@@ -198,6 +208,8 @@ def observe_element_in_background():
             if element.text != observed_text:
                 print("Text of " + html_id + " changed to: " + element.text)
                 observed_text = element.text
+                # Change the content to the observed text every time a change is detected
+                code_view.set_content(observed_text)
         except exceptions.NoSuchElementException as e:
             print(e)
             print("Observing this element is not possible as it does not exist.")
@@ -222,9 +234,7 @@ def start_observing_element_by_id():
         Returns:
             None
         """
-    observe_id = askstring(
-        "ID to Observe", "Which HTML element ID would you like to observe?"
-    )
+    observe_id = "Sourcecode"
     singleton = Singleton.getInstance()
     singleton.add_observed_id(observe_id)
     t = Thread(target=observe_element_in_background)
@@ -240,9 +250,7 @@ def stop_observing_element_by_id():
         Returns:
             None
         """
-    observe_id = askstring(
-        "ID to Observe", "Which HTML element ID would you like to stop observing?"
-    )
+    observe_id = "Sourcecode"
     singleton = Singleton.getInstance()
     singleton.remove_observed_id(observe_id)
 
