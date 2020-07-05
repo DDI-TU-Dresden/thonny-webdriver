@@ -1,0 +1,184 @@
+{
+  "followElement": {
+    "followElement": {
+      "followElement": {
+        "followElement": {
+          "followElement": {
+            "followElement": {
+              "followElement": {
+                "child": {
+                  "followElement": {
+                    "followElement": {
+                      "followElement": null,
+                      "id": "5d796f5c-8976-4d4c-b207-da6cb3575719",
+                      "type": "InsertNode"
+                    },
+                    "id": "91360a86-b7e8-4c5a-94af-d35e2eab6d2d",
+                    "text": "x",
+                    "type": "OutputNode"
+                  },
+                  "id": "1a73c330-b114-486d-91fe-5b0e170748c6",
+                  "type": "InsertNode"
+                },
+                "followElement": {
+                  "followElement": {
+                    "child": {
+                      "followElement": {
+                        "followElement": {
+                          "followElement": null,
+                          "id": "5b706db2-8200-4bd6-a49f-7069fc70e555",
+                          "type": "InsertNode"
+                        },
+                        "id": "06e1b3d8-43e5-4ced-b996-b9a1fe75a7b9",
+                        "text": "x",
+                        "type": "OutputNode"
+                      },
+                      "id": "49e82227-9498-42ef-b467-d84a12aa2669",
+                      "type": "InsertNode"
+                    },
+                    "followElement": {
+                      "followElement": {
+                        "falseChild": {
+                          "followElement": {
+                            "followElement": {
+                              "followElement": null,
+                              "id": "d711d434-0e6f-406f-937b-8c22bac895df",
+                              "type": "InsertNode"
+                            },
+                            "id": "7cb0bcfb-c9d5-427e-baf4-0b4ded97f8d2",
+                            "text": "\"false\"",
+                            "type": "OutputNode"
+                          },
+                          "id": "e5d5ff9a-549b-497a-b2d0-a6be06b16cbd",
+                          "type": "InsertNode"
+                        },
+                        "followElement": {
+                          "followElement": {
+                            "cases": [
+                              {
+                                "followElement": {
+                                  "followElement": {
+                                    "followElement": {
+                                      "followElement": null,
+                                      "id": "a84cf848-e846-4eec-ae44-fca2b43f3ef4",
+                                      "type": "InsertNode"
+                                    },
+                                    "id": "9f49d5e3-701e-487f-9c5a-060c9cbf7f75",
+                                    "text": "\"bla\"",
+                                    "type": "OutputNode"
+                                  },
+                                  "id": "0fe666a3-e440-45b2-b0bb-56a5f690cec8",
+                                  "type": "InsertNode"
+                                },
+                                "id": "32e1be81-6d80-429e-bb20-9b6fd8af0ec2",
+                                "text": "\"bla\":",
+                                "type": "InsertCase"
+                              },
+                              {
+                                "followElement": {
+                                  "followElement": {
+                                    "followElement": {
+                                      "followElement": null,
+                                      "id": "5068ff62-654a-4600-8ad5-03bd3ac15c2b",
+                                      "type": "InsertNode"
+                                    },
+                                    "id": "6eb64f13-4bcc-4453-886b-9e553d971ee1",
+                                    "text": "\"bla2\"",
+                                    "type": "OutputNode"
+                                  },
+                                  "id": "070f0b8c-df1d-47ff-ba66-6aa966a94cce",
+                                  "type": "InsertNode"
+                                },
+                                "id": "5e9de61f-cd00-44ed-996c-6dd5b2c2478f",
+                                "text": "\"bla2\":",
+                                "type": "InsertCase"
+                              }
+                            ],
+                            "defaultNode": {
+                              "followElement": {
+                                "followElement": {
+                                  "followElement": {
+                                    "followElement": null,
+                                    "id": "06359902-8ac1-47c6-8b60-1bf02def8ec1",
+                                    "type": "InsertNode"
+                                  },
+                                  "id": "96ed559a-495a-407a-8718-6d2de1ecce23",
+                                  "text": "\"sonst\"",
+                                  "type": "OutputNode"
+                                },
+                                "id": "a55ab706-94f0-4ccf-860e-5caf74f30b92",
+                                "type": "InsertNode"
+                              },
+                              "id": "35a7de78-bc33-490a-9e4c-49f8404d1018",
+                              "text": "Sonst",
+                              "type": "InsertCase"
+                            },
+                            "defaultOn": true,
+                            "followElement": {
+                              "followElement": null,
+                              "id": "4f74aa5d-70a5-4437-963d-9de8d873a339",
+                              "type": "InsertNode"
+                            },
+                            "id": "44611f02-c3e2-480e-b454-2002105afbbd",
+                            "text": "x",
+                            "type": "CaseNode"
+                          },
+                          "id": "0b8814e1-af79-4487-849f-14b36f2eddbd",
+                          "type": "InsertNode"
+                        },
+                        "id": "cf4a6ad7-56aa-4a26-9948-ef176ed02027",
+                        "text": "x == 'bla'",
+                        "trueChild": {
+                          "followElement": {
+                            "followElement": {
+                              "followElement": null,
+                              "id": "65229ad3-ce3e-47a8-96db-f8cd8aec9627",
+                              "type": "InsertNode"
+                            },
+                            "id": "db0f813a-d3c3-4804-bfa3-fefad7c173b5",
+                            "text": "\"true\"",
+                            "type": "OutputNode"
+                          },
+                          "id": "c5f96bd4-7401-44d9-b2ba-229d3d67cec8",
+                          "type": "InsertNode"
+                        },
+                        "type": "BranchNode"
+                      },
+                      "id": "36956fa0-2d4c-438d-a10c-bb7706d62a3f",
+                      "type": "InsertNode"
+                    },
+                    "id": "29a74af2-5905-4813-b859-680753450552",
+                    "text": "x == 'bla'",
+                    "type": "HeadLoopNode"
+                  },
+                  "id": "12d8f3ea-747d-4578-9ebf-478a0d00da06",
+                  "type": "InsertNode"
+                },
+                "id": "89071ad0-5e91-4dff-9fa6-342085b7baaa",
+                "text": "i in range(5)",
+                "type": "CountLoopNode"
+              },
+              "id": "13942fa8-b56d-4648-93e3-7fdc7ab38b8e",
+              "type": "InsertNode"
+            },
+            "id": "ec80248c-5418-4f27-b118-99eb4ecd465e",
+            "text": "x",
+            "type": "OutputNode"
+          },
+          "id": "fd4f16dd-f596-4cab-abd0-87f6329db67e",
+          "type": "InsertNode"
+        },
+        "id": "e236b3a4-8947-4bbb-aa63-eeab98fc2ac3",
+        "text": "x = x + 'bla'",
+        "type": "TaskNode"
+      },
+      "id": "5eb5d334-7ad7-43a0-ab38-304dbedbf0a1",
+      "type": "InsertNode"
+    },
+    "id": "4d4ffbac-78cb-45b5-9796-33ddf429ad46",
+    "text": "x",
+    "type": "InputNode"
+  },
+  "id": "f08c91f3-3ef4-4dbf-bd98-d0e865802283",
+  "type": "InsertNode"
+}

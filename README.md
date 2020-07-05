@@ -1,5 +1,9 @@
 # Webdriver Plugin for the thonny IDE
 
+## Usage with struktog
+
+All the following elements can be found in the "tools" menu of thonny. "Open website" opens the struktog website in the browser and shows the Python source code. Remember, this website is only accessible in the university network. "Start observing element by id" will observe the changes in the python code and send it directly to your thonny code view. "Stop observing element by id" will stop looking for changes and updating the code view. "Transform code view to JSON" will transform the python code view source code to a JSON representation which can be loaded by struktog. An example can be found [here](./struktog.json).
+
 ## Warning
 
 The browser Chromium is not supported. Advanced security features can only be set on Firefox.
