@@ -448,114 +448,147 @@ def transform_ast(ast_list, data, python_lines):
             # out the difference by checking if the orelse attribute contains another
             # _ast.If object. We need to do recursion wherever other elements than
             # followElement need to be populated.
-            if isinstance(body_obj.orelse[0], _ast.If):
-                # This is always a CaseNode.
-                defaultNode = {}
-                start_cases_first = {
-                    "id": str(uuid.uuid4()),
-                    "type": "InsertNode",
-                    "followElement": None,
-                }
-                # The cases object is populated with data from the first case before adding other cases.
-                cases = [
-                    {
+            try:
+                if isinstance(body_obj.orelse[0], _ast.If):
+                    # This is always a CaseNode.
+                    defaultNode = {}
+                    start_cases_first = {
                         "id": str(uuid.uuid4()),
-                        "type": "InsertCase",
-                        "text": python_lines[body_obj.lineno - 1].split(" == ")[1].replace(":", ""),
-                        "followElement": transform_ast(
-                            body_obj.body, start_cases_first, python_lines
-                        ),
+                        "type": "InsertNode",
+                        "followElement": None,
                     }
-                ]
-                defaultOn = False
-                case_obj = body_obj
-                while True:
-                    try:
-                        if isinstance(case_obj.orelse[0], _ast.If):
-                            # Another case has been discovered and will be added to the
-                            # list of cases.
-                            case_obj = case_obj.orelse[0]
-                            start_cases = {
-                                "id": str(uuid.uuid4()),
-                                "type": "InsertNode",
-                                "followElement": None,
-                            }
-                            cases.append(
-                                {
+                    # The cases object is populated with data from the first case before adding other cases.
+                    cases = [
+                        {
+                            "id": str(uuid.uuid4()),
+                            "type": "InsertCase",
+                            "text": python_lines[body_obj.lineno - 1]
+                            .split(" == ")[1]
+                            .replace(":", ""),
+                            "followElement": transform_ast(
+                                body_obj.body, start_cases_first, python_lines
+                            ),
+                        }
+                    ]
+                    defaultOn = False
+                    case_obj = body_obj
+                    while True:
+                        try:
+                            if isinstance(case_obj.orelse[0], _ast.If):
+                                # Another case has been discovered and will be added to the
+                                # list of cases.
+                                case_obj = case_obj.orelse[0]
+                                start_cases = {
+                                    "id": str(uuid.uuid4()),
+                                    "type": "InsertNode",
+                                    "followElement": None,
+                                }
+                                cases.append(
+                                    {
+                                        "id": str(uuid.uuid4()),
+                                        "type": "InsertCase",
+                                        "text": python_lines[case_obj.lineno - 1]
+                                        .split(" == ")[1]
+                                        .replace(":", ""),
+                                        "followElement": transform_ast(
+                                            case_obj.body, start_cases, python_lines
+                                        ),
+                                    }
+                                )
+                            else:
+                                # case_obj.orelse list does not contain a _ast.If statement
+                                # but another one, we know it has to be the default case
+                                # now.
+                                start_cases = {
+                                    "id": str(uuid.uuid4()),
+                                    "type": "InsertNode",
+                                    "followElement": None,
+                                }
+                                defaultOn = True
+                                defaultNode = {
                                     "id": str(uuid.uuid4()),
                                     "type": "InsertCase",
-                                    "text": python_lines[case_obj.lineno - 1].split(
-                                        " == "
-                                    )[1].replace(":", ""),
+                                    "text": "Sonst",
                                     "followElement": transform_ast(
-                                        case_obj.body, start_cases, python_lines
+                                        case_obj.orelse, start_cases, python_lines
                                     ),
                                 }
-                            )
-                        else:
-                            # case_obj.orelse list does not contain a _ast.If statement
-                            # but another one, we know it has to be the default case
-                            # now.
-                            start_cases = {
-                                "id": str(uuid.uuid4()),
-                                "type": "InsertNode",
-                                "followElement": None,
-                            }
-                            defaultOn = True
+                                break
+                        except:
+                            # If calling case_obj.orelse[0] throws an error, we know that
+                            # the default case does not exist, so we set it to a
+                            # Placeholder. Struktog also acts like this.
+                            defaultOn = False
                             defaultNode = {
                                 "id": str(uuid.uuid4()),
                                 "type": "InsertCase",
                                 "text": "Sonst",
-                                "followElement": transform_ast(
-                                    case_obj.orelse, start_cases, python_lines
-                                ),
+                                "followElement": {
+                                    "id": str(uuid.uuid4()),
+                                    "type": "InsertNode",
+                                    "followElement": {"type": "Placeholder"},
+                                },
                             }
                             break
-                    except:
-                        # If calling case_obj.orelse[0] throws an error, we know that
-                        # the default case does not exist, so we set it to a
-                        # Placeholder. Struktog also acts like this.
-                        defaultOn = False
-                        defaultNode = {
-                            "id": str(uuid.uuid4()),
-                            "type": "InsertCase",
-                            "text": "Sonst",
+                    subtree.update(
+                        {
                             "followElement": {
                                 "id": str(uuid.uuid4()),
-                                "type": "InsertNode",
-                                "followElement": {"type": "Placeholder"},
-                            },
+                                "type": "CaseNode",
+                                "text": python_lines[body_obj.lineno - 1]
+                                .replace("if ", "")
+                                .replace(":", "")
+                                .split(" == ")[0],
+                                "cases": cases,
+                                "defaultOn": defaultOn,
+                                "defaultNode": defaultNode,
+                                "followElement": {
+                                    "id": str(uuid.uuid4()),
+                                    "type": "InsertNode",
+                                    "followElement": None,
+                                },
+                            }
                         }
-                        break
-                subtree.update(
-                    {
-                        "followElement": {
-                            "id": str(uuid.uuid4()),
-                            "type": "CaseNode",
-                            "text": python_lines[body_obj.lineno - 1]
-                            .replace("if ", "")
-                            .replace(":", "")
-                            .split(" == ")[0],
-                            "cases": cases,
-                            "defaultOn": defaultOn,
-                            "defaultNode": defaultNode,
-                            "followElement": {
-                                "id": str(uuid.uuid4()),
-                                "type": "InsertNode",
-                                "followElement": None,
-                            },
-                        }
+                    )
+                else:
+                    # This is always a BranchNode. We need to do recursion on the
+                    # trueChild and falseChild element.
+                    start_true = {
+                        "id": str(uuid.uuid4()),
+                        "type": "InsertNode",
+                        "followElement": None,
                     }
-                )
-            else:
-                # This is always a BranchNode. We need to do recursion wherever other
-                # elements than followElement need to be populated.
+                    start_false = {
+                        "id": str(uuid.uuid4()),
+                        "type": "InsertNode",
+                        "followElement": None,
+                    }
+                    subtree.update(
+                        {
+                            "followElement": {
+                                "id": str(uuid.uuid4()),
+                                "type": "BranchNode",
+                                "text": python_lines[body_obj.lineno - 1]
+                                .replace("if ", "")
+                                .replace(":", ""),
+                                "trueChild": transform_ast(
+                                    body_obj.body, start_true, python_lines
+                                ),
+                                "falseChild": transform_ast(
+                                    body_obj.orelse, start_false, python_lines
+                                ),
+                                "followElement": {
+                                    "id": str(uuid.uuid4()),
+                                    "type": "InsertNode",
+                                    "followElement": None,
+                                },
+                            }
+                        }
+                    )
+            except:
+                # This is always a BranchNode. We need to do recursion on the trueChild
+                # element.
                 start_true = {
-                    "id": str(uuid.uuid4()),
-                    "type": "InsertNode",
-                    "followElement": None,
-                }
-                start_false = {
                     "id": str(uuid.uuid4()),
                     "type": "InsertNode",
                     "followElement": None,
@@ -571,9 +604,11 @@ def transform_ast(ast_list, data, python_lines):
                             "trueChild": transform_ast(
                                 body_obj.body, start_true, python_lines
                             ),
-                            "falseChild": transform_ast(
-                                body_obj.orelse, start_false, python_lines
-                            ),
+                            "falseChild": {
+                                "id": str(uuid.uuid4()),
+                                "type": "InsertNode",
+                                "followElement": {"type": "Placeholder"},
+                            },
                             "followElement": {
                                 "id": str(uuid.uuid4()),
                                 "type": "InsertNode",
@@ -601,7 +636,7 @@ def transform_code_view():
     python_lines = python_code.splitlines()
     ast_obj = ast.parse(python_code)
     data.update(transform_ast(ast_obj.body, data, python_lines))
-    with open('output.json', 'w') as json_file:
+    with open("output.json", "w") as json_file:
         json.dump(data, json_file)
     workdir = os.getcwd()
     singleton = Singleton.getInstance()
