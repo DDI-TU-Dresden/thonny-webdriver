@@ -9,6 +9,7 @@ import uuid
 import ast
 import _ast
 import json
+import os
 
 
 class Singleton:
@@ -24,7 +25,7 @@ class Singleton:
 
     __instance = None
     closed = False
-    sleeptime = 2
+    sleeptime = 0.1
     observed_ids = []
 
     @staticmethod
@@ -169,8 +170,8 @@ def open_website():
             None
         """
     singleton = Singleton.getInstance()
-    # This is the URL for struktog only available in the campus VPN
-    address = "http://172.26.62.121"
+    # This is the URL for struktog development server
+    address = "https://dditools.inf.tu-dresden.de/dev/struktog/"
     try:
         singleton.driver.get(address)
     except exceptions.InsecureCertificateException:
@@ -215,7 +216,8 @@ def observe_element_in_background():
         try:
             element = driver.find_element_by_id(html_id)
             if element.text != observed_text:
-                print("Text of " + html_id + " changed to: " + element.text)
+                # Uncomment the following line to get more DEBUG insights
+                # print("Text of " + html_id + " changed to: " + element.text)
                 observed_text = element.text
                 # Change the content to the observed text every time a change is detected
                 code_view.set_content(observed_text)
@@ -459,7 +461,7 @@ def transform_ast(ast_list, data, python_lines):
                     {
                         "id": str(uuid.uuid4()),
                         "type": "InsertCase",
-                        "text": python_lines[body_obj.lineno - 1].split(" == ")[1],
+                        "text": python_lines[body_obj.lineno - 1].split(" == ")[1].replace(":", ""),
                         "followElement": transform_ast(
                             body_obj.body, start_cases_first, python_lines
                         ),
@@ -484,7 +486,7 @@ def transform_ast(ast_list, data, python_lines):
                                     "type": "InsertCase",
                                     "text": python_lines[case_obj.lineno - 1].split(
                                         " == "
-                                    )[1],
+                                    )[1].replace(":", ""),
                                     "followElement": transform_ast(
                                         case_obj.body, start_cases, python_lines
                                     ),
@@ -587,7 +589,9 @@ def transform_code_view():
     """This method gets called if the "Transform code view to JSON" command is clicked
     in the "tools" menu. It will get the content of the current editor and transform it
     in a JSON representation that is readable by struktog. It does this by converting
-    the source code in an Abstract Syntax Tree first.
+    the source code in an Abstract Syntax Tree first. Then, it will dump the JSON
+    representation in a file. After that, the file will be sent to the webapplication
+    using a HTML input element.
 
         Returns:
             None
@@ -597,7 +601,12 @@ def transform_code_view():
     python_lines = python_code.splitlines()
     ast_obj = ast.parse(python_code)
     data.update(transform_ast(ast_obj.body, data, python_lines))
-    print(json.dumps(data, indent=2, sort_keys=True))
+    with open('output.json', 'w') as json_file:
+        json.dump(data, json_file)
+    workdir = os.getcwd()
+    singleton = Singleton.getInstance()
+    upload = singleton.driver.find_element_by_class_name("webdriver-input")
+    upload.send_keys(workdir + "/output.json")
 
 
 def load_plugin():
