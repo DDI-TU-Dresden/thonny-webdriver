@@ -72,7 +72,17 @@ class Singleton:
                 )
             except BaseException:
                 try:
-                    self.driver = webdriver.Chrome()
+                    # Chromium Command Line Switches https://peter.sh/experiments/chromium-command-line-switches/
+                    options = webdriver.ChromeOptions()
+                    options.set_capability(
+                        "chrome.switches",
+                        "--cipher-suite-blacklist TLS_RSA_WITH_3DES_EDE3_SHA,"
+                        + "TLS_DH_RSA_WITH_AES_128_SHA,TLS_DH_RSA_WITH_AES_256_SHA,"
+                        + "TLS_RSA_WITH_AES_128_SHA,TLS_RSA_WITH_AES_256_SHA,"
+                        + "TLS_ECDH_ECDSA_WITH_AES_128_SHA,TLS_ECDH_ECDSA_WITH_AES_256_SHA,"
+                        + "TLS_ECDH_RSA_WITH_AES_128_SHA,TLS_ECDH_RSA_WITH_AES_256_SHA",
+                    )
+                    self.driver = webdriver.Chrome(chrome_options=options)
                 except BaseException:
                     try:
                         self.driver = webdriver.Safari()
@@ -81,7 +91,10 @@ class Singleton:
                             self.driver = webdriver.Edge()
                         except BaseException:
                             try:
-                                self.driver = webdriver.Opera()
+                                caps = DesiredCapabilities.OPERA[
+                                    "chrome.switches"
+                                ] = "--cipher-suite-blacklist TLS_RSA_WITH_3DES_EDE3_SHA,TLS_DH_RSA_WITH_AES_128_SHA,TLS_DH_RSA_WITH_AES_256_SHA,TLS_RSA_WITH_AES_128_SHA,TLS_RSA_WITH_AES_256_SHA,TLS_ECDH_ECDSA_WITH_AES_128_SHA,TLS_ECDH_ECDSA_WITH_AES_256_SHA,TLS_ECDH_RSA_WITH_AES_128_SHA,TLS_ECDH_RSA_WITH_AES_256_SHA"
+                                self.driver = webdriver.Opera(desired_capabilities=caps)
                             except BaseException:
                                 try:
                                     self.driver = webdriver.Ie()

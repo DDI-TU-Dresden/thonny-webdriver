@@ -2,7 +2,7 @@
 
 ## Warning
 
-The browser Chromium is not supported. Advanced security features can only be set on Firefox.
+The browsers Microsoft Edge and Chromium are not supported. Advanced security features can only be set on Firefox, Chrome and Opera.
 
 ## Installation
 
