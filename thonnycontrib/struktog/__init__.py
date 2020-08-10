@@ -10,6 +10,7 @@ import ast
 import _ast
 import json
 import os
+from pathlib import Path
 
 
 class Singleton:
@@ -636,12 +637,12 @@ def transform_code_view():
     python_lines = python_code.splitlines()
     ast_obj = ast.parse(python_code)
     data.update(transform_ast(ast_obj.body, data, python_lines))
-    with open("output.json", "w") as json_file:
+    path_to_file = str((Path.home() / "output.json").resolve())
+    with open(path_to_file, "w") as json_file:
         json.dump(data, json_file)
-    workdir = os.getcwd()
     singleton = Singleton.getInstance()
     upload = singleton.driver.find_element_by_class_name("webdriver-input")
-    upload.send_keys(workdir + "/output.json")
+    upload.send_keys(path_to_file)
 
 
 def load_plugin():
